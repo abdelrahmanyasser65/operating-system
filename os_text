@@ -1,0 +1,189 @@
+if yout want used function: man 2 nameFunction
+_________________________________
+WRITE
+man 2 write 
+nano w.c
+in nano: 
+#include<unistd.h>
+#incldue <stdio.h>
+int main(){
+    int n ;
+    n=write(1,"abdo\n",10);  //print:abdo
+    printf("value of n is %d\n",n); print:10
+}
+^S then ^X
+gcc w.c
+./a.out
+__________output
+READ
+ man 2 read
+ nano r.c
+ in nano: 
+ #include<unistd.h>
+ int main(){
+    int n ;
+    char b[30];
+    n=read(0,b,30);
+    write(1,b,n);
+ }
+ ^s then ^X
+ gcc r.c
+ ./a.out
+ _________________________________________
+ OPEN
+READ ONLY
+ ===>open file:
+ #include<unistd.h>
+ #include<fcntl.h>
+ #include<sys/types.h>
+ #incldue<sys/stat.h>
+ int main(){
+    int n,fd;
+    char buf [50];
+     fd=open("test.txt",O_RDONLY);
+     n=read(fd,buf,10);
+     write(1,buf,n);
+ }
+ gcc o1.c
+ ./a.out
+ cat test.txt
+ ________________
+create and open file:
+  #include<unistd.h>
+ #include<fcntl.h>
+ #include<sys/types.h>
+ #incldue<sys/stat.h>
+ int main(){
+    int n,fd,fd1;
+    char buf [50];
+     fd=open("test.txt",O_RDONLY);
+     n=read(fd,buf,10);
+     fd1=open("target",O_CREAT|O_WRONLY,0642);
+     write(fd1,buf,n);
+ }
+ gcc o2.c
+ ./a.out
+ cat target
+ ________________
+ write to text in file:
+
+ #include<fcntl.h>
+ #include<sys/types.h>
+ #incldue<sys/stat.h>
+ int main(){
+    int n,fd,fd1;
+    char buf [50];
+     n=read(0,buf,50);
+     fd1=open("target",O_WRONLY);
+     write(fd1,buf,n);
+ }
+ cat target
+ ________________
+ add to text in fail:
+  #include<fcntl.h>
+ #include<sys/types.h>
+ #incldue<sys/stat.h>
+ int main(){
+    int n,fd,fd1;
+    char buf [50];
+     n=read(0,buf,50);
+     fd1=open("target",O_WRONLY|O_APPEND);
+     write(fd1,buf,n);
+ }
+ ________________
+ LSEEK:
+  
+  lseek 10 char
+  nano seek.c
+  in nano:
+  #include<sys/types.h>
+  #incldue<sys/stat.h>
+  #incldue<fcntl.h>
+  #incldue<unistd.h>
+  int main(){
+   int n,f, f1;
+   char buff[10];
+   f=open("Seeking",O_RDWR);
+   read(f,buff,10);  //first 10 char
+   write(1,buff,10);
+   lseek(f,10,SEEK_CUR); //lseek 10 char,
+   read(f,buff,10);  //read after 10 char
+   write (1,buff,10);
+  }
+  ________________
+  show 10 char after 10 char
+  #include<sys/types.h>
+  #incldue<sys/stat.h>
+  #incldue<fcntl.h>
+  #incldue<unistd.h>
+  #include<stdio.h>
+  int main(){
+    int n,f,f1;
+    char buff[10];
+    f=open("seeking",O_RDWR);
+    f1=lseek(f,10,SEEK_SET);
+    printf("pointer is at %d positoin\n,f1);
+    read(f,buff,10);
+    write(1,buff,10);
+  }
+  ________________
+  print last 11 char:::
+#include<sys/types.h>
+  #incldue<sys/stat.h>
+  #incldue<fcntl.h>
+  #incldue<unistd.h>
+  #include<stdio.h>
+  int main(){
+    int n,f,f1;
+    char buff[20];
+    f=open("seeking",O_RDWR);
+    f1=lseek(f,-11,SEEK_END);
+    read(f,buff,10);
+    write(1,buff,10);
+  }
+  __________________________
+DUP
+
+#include<sys/types.h>
+  #incldue<sys/stat.h>
+  #incldue<fcntl.h>
+  #incldue<unistd.h>
+  #include<stdio.h>
+  int main(){
+int fd,fd1,fd2;
+fd=open("dup",O_RDONLY);
+printf("old file %d\n",fd);
+fd1=dup(fd);
+printf("new file %d\n,fd1);
+fd2=dup(fd1);
+printf("new new %d,fd2);
+  }
+  ________________
+  DUP2
+  #include<sys/types.h>
+  #incldue<sys/stat.h>
+  #incldue<fcntl.h>
+  #incldue<unistd.h>
+  #include<stdio.h>
+  int main(){
+int fd,fd1;
+fd=open("dup",O_RDONLY);
+printf("old file %d\n",fd);
+fd1=dup2(fd,7);
+printf("new file %d\n,fd1);
+  }
+  _________________________________________
+
+
+include<fcntl.h>
+#include<unistd.h>
+#include<sys/types.h>
+#include<sys/stat.h>
+int main(){
+int n,f1,f2,f3;
+char buf[50];
+f1=open("t1",O_RDONLY);
+n=read(f1,buf,50);
+f2=open("t22",O_CREAT|O_WRONLY|O_APPEND,0642);
+write(f2,buf,n);
+}

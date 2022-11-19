@@ -1,0 +1,42 @@
+//task 1 
+#include<unistd.h>
+int main(){
+int n;
+char t[15];
+write(1,"Enter 15 char: ",20);
+n=read(0,t,15);
+write(1,t,n);
+}
+
+
+
+//task 2                                  
+#include<unistd.h>
+#include<sys/types.h>
+#include<sys/stat.h>
+#include<fcntl.h>
+int main(){
+int n, f1,f2;
+char b[20];
+f1=open("task2.txt",O_RDONLY);
+f2=open("task22.txt",O_WRONLY|O_APPEND);
+n=read(f1,b,20);
+write(f2,b,n);
+}
+
+//task 3 
+#include<unistd.h>
+#include<fcntl.h>
+#include<sys/types.h>
+#include<sys/stat.h>
+int main(){
+int n , f1, f2;
+char buf[50];
+f1=open("task3.txt",O_RDONLY);
+n=read(f1,buf,50);
+f2=open("task32.txt",O_CREAT|O_WRONLY,0642);
+write(f2,buf,n);
+}
+
+
+
