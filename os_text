@@ -5,7 +5,7 @@ man 2 write
 nano w.c
 in nano: 
 #include<unistd.h>
-#incldue <stdio.h>
+#include <stdio.h>
 int main(){
     int n ;
     n=write(1,"abdo\n",10);  //print:abdo
@@ -16,19 +16,20 @@ gcc w.c
 ./a.out
 __________output
 READ
- man 2 read
- nano r.c
- in nano: 
- #include<unistd.h>
- int main(){
-    int n ;
-    char b[30];
-    n=read(0,b,30);
-    write(1,b,n);
- }
- ^s then ^X
- gcc r.c
- ./a.out
+                                   r.c                                              
+#include<unistd.h>
+#include<stdio.h>
+int main(){
+
+char b[30];
+int n;
+n=read(0,b,30);
+write(1,b,n);
+printf("value of n is %d\n",n);
+}
+
+
+
  _________________________________________
  OPEN
 READ ONLY
@@ -48,7 +49,7 @@ READ ONLY
  ./a.out
  cat test.txt
  ________________
-create and open file:
+create file copy old file:
   #include<unistd.h>
  #include<fcntl.h>
  #include<sys/types.h>
@@ -65,7 +66,7 @@ create and open file:
  ./a.out
  cat target
  ________________
- write to text in file:
+write text in file:
 
  #include<fcntl.h>
  #include<sys/types.h>
@@ -84,7 +85,7 @@ create and open file:
  #include<sys/types.h>
  #incldue<sys/stat.h>
  int main(){
-    int n,fd,fd1;
+    int n,fd1;
     char buf [50];
      n=read(0,buf,50);
      fd1=open("target",O_WRONLY|O_APPEND);
@@ -111,7 +112,7 @@ create and open file:
    write (1,buff,10);
   }
   ________________
-  show 10 char after 10 char
+  seek_set show 10 char after 10 char
   #include<sys/types.h>
   #incldue<sys/stat.h>
   #incldue<fcntl.h>
@@ -121,7 +122,7 @@ create and open file:
     int n,f,f1;
     char buff[10];
     f=open("seeking",O_RDWR);
-    f1=lseek(f,10,SEEK_SET);
+    f1=lseek(f,10,SEEK_SET); 
     printf("pointer is at %d positoin\n,f1);
     read(f,buff,10);
     write(1,buff,10);
@@ -159,6 +160,7 @@ fd2=dup(fd1);
 printf("new new %d,fd2);
   }
   ________________
+  with file number 
   DUP2
   #include<sys/types.h>
   #incldue<sys/stat.h>
@@ -174,16 +176,212 @@ printf("new file %d\n,fd1);
   }
   _________________________________________
 
-
-include<fcntl.h>
+--fork
 #include<unistd.h>
 #include<sys/types.h>
-#include<sys/stat.h>
+#include<stdio.h>
 int main(){
-int n,f1,f2,f3;
-char buf[50];
-f1=open("t1",O_RDONLY);
-n=read(f1,buf,50);
-f2=open("t22",O_CREAT|O_WRONLY|O_APPEND,0642);
-write(f2,buf,n);
+
+pid_t q;
+printf("before fork\n");
+q=fork();
+if(q==0){
+printf("I am child having id %d\n",getpid());
+printf("my parent's id is %d\n",getppid());
+}else{
+printf("MY child's id is %d\n" ,q);
+printf("Im  partent id is %d\n ",getpid());
 }
+}
+_________________________________________
+wait 
+                                                                            
+#include<unistd.h>
+#include<sys/wait.h>
+#include<sys/types.h>
+#include<stdio.h>
+int main(){
+pid_t q;
+printf("before fork\n");
+q=fork();
+if(q==0){
+printf("I am child having id %d\n",getpid());
+printf("My parent's id is %d\n",getppid());
+}
+else{
+wait(NULL);
+printf("my child's id is %d\n",q);
+printf("I am parent having id %d\n",getpid());
+}
+}
+__________________________
+with sleep
+
+#include<sys/wait.h>
+#include<sys/types.h>
+#include<stdio.h>
+int main(){
+pid_t q;
+printf("before fork\n");
+q=fork();
+if(q==0){
+sleep(3);
+printf("I am child having id %d\n",getpid());
+printf("My parent's id is %d\n",getppid());
+}
+else{
+//wait(NULL);
+printf("my child's id is %d\n",q);
+printf("I am parent having id %d\n",getpid());
+}
+}
+
+__________________________
+
+orphan
+
+
+#include<stdio.h>
+#include<unistd.h>
+#include<sys/types.h>
+
+int main(){
+pid_t p;
+p=fork();
+if(p==0){
+sleep(10);
+printf("iam child having pid %d\n",getpid());
+printf("my parint pid is %d\n",getppid());
+}
+else{
+sleep(2);
+printf("Iam parent having pid %d\n",getpid());
+printf("my child pid is %d\n",p);
+}
+}
+
+_________________________________
+zombie
+
+#include<stdio.h>
+#include<unistd.h>
+#include<sys/types.h>
+#include<sys/wait.h>
+int main(){
+pid_t p;
+p=fork();
+if(p==0)
+{
+printf("I am child pid %d\n",getpid());
+printf("MY parent pid is %d\n",getppid());
+}else{
+wait(NULL);
+sleep(3);
+printf("I am parent having pid %d\n",getpid());
+printf("my child pid is %d\n",p);
+}
+}
+
+_______________________________________
+execl
+#include<stdio.h>
+#include<unistd.h>
+int main()
+{
+printf("Before\n");
+execl("/bin/ps","ps",NULL);
+printf("After\n");
+}
+
+_________________________________
+execl.fork
+#include<unistd.h>
+#include<sys/types.h>
+#include<stdio.h>
+#include<sys/wait.h>
+int main(){
+pid_t q;
+q=fork();
+if(q==0){
+execl("/bin/ps","ps",NULL);
+printf("I am child having id %d\n",getpid());
+sleep(10);}
+else{
+wait (NULL);
+printf("iam parent having id is %d\n",getpid());
+}
+
+}
+
+thread
+
+
+/program to create a thread 
+#include<stdio.h>
+#include<unistd.h>
+#include<pthread.h>
+void *thread_function(void *arg);
+int i,j;
+int main(){
+pthread_t a_thread; //thread declartion
+pthread_create(&a_thread,NULL,thread_function,NULL);  //thread is created 
+pthread_join(a_thread,NULL);//process waits for thread to finish
+printf("inside main program\n");
+for(j=20;j<25;j++)
+{
+printf("%d\n",j);
+sleep(1);
+}
+}
+void *thread_function(void *arg){
+printf("inside thread\n");
+for(i=0;i<5;i++){
+printf("%d\n",i);
+sleep(1);
+}
+}
+
+in nano 
+gcc thread.c -lpthead
+__________________________
+//create thread to add two numbers
+
+#include<stdio.h>
+#include<unistd.h>
+#include<pthread.h>
+void *thread_function(void *arg);
+int num[2]={3,5};
+int main(){
+pthread_t a_thread;
+void *result;
+pthread_create(&a_thread,NULL,thread_function,(void*)num);
+pthread_join(a_thread,&result);
+printf("inside main process\n");
+printf("thread returned %s\n",(char*)result);
+
+}
+
+void *thread_function(void *arg){
+printf("inside thread\n");
+int *x=arg;
+int sum=x[0]+x[1];
+printf("sum is %d\n",sum);
+pthread_exit("sum calcuated");
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
