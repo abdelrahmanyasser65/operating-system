@@ -1,0 +1,24 @@
+--Thread prints 0-4 + main 20_24--
+
+#include<stdio.h>
+#include<unistd.h>
+#include<pthread.h>
+void*thread_fun(void*args);
+int i,n,j;
+int main(){
+pthread_t thread;
+pthread_create(&thread,NULL,thread_fun,NULL);
+pthread_join(thread,NULL);
+printf("inside main program\n");
+for(j=20;j<=24;j++){
+printf("%d\n",j);
+sleep(1);
+}
+}
+void*thread_fun(void*args){
+printf("inside thread\n");
+for(i=0;i<5;i++){
+printf("%d\n",i);
+sleep(1);
+}
+}

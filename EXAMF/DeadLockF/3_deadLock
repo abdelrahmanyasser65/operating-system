@@ -1,0 +1,50 @@
+#include<stdio.h>
+#include<unistd.h>
+#include<pthread.h>
+void *f1();
+void *f2();
+void *f3();
+pthread_mutex_t m1,m2,m3;
+int main()
+{
+pthread_mutex_init(&m1,NULL);
+pthread_mutex_init(&m2,NULL);
+pthread_mutex_init(&m3,NULL);
+pthread_t t1,t2,t3;
+pthread_create(&t1,NULL,f1,NULL);
+pthread_create(&t2,NULL,f2,NULL);
+pthread_create(&t3,NULL,f3,NULL);
+pthread_join(t1,NULL);
+pthread_join(t2,NULL);
+pthread_join(t3,NULL);
+}
+
+void *f1(){
+printf("t1 acquiring m1\n");
+pthread_mutex_lock(&m1);
+printf("t1 acquried m1\n");
+sleep(1);
+printf("t1 acquireing m2\n");
+pthread_mutex_lock(&m2);
+printf("t1 acuried m2\n");
+}
+
+void *f2(){
+printf("t2 acquiring m2\n");
+pthread_mutex_lock(&m2);
+printf("t2 acquried m2\n");
+sleep(1);
+printf("t2 acquireing m3\n");
+pthread_mutex_lock(&m3);
+printf("t2 acuried m3\n");
+}
+
+void *f3(){
+printf("t3 acquiring m3\n");
+pthread_mutex_lock(&m3);
+printf("t3 acquried m3\n");
+sleep(1);
+printf("t3 acquireing m1\n");
+pthread_mutex_lock(&m1);
+printf("t3 acuried m1\n");
+}

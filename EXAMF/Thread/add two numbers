@@ -1,0 +1,21 @@
+--create a thread to add two numbers--
+#include<stdio.h>
+#include<unistd.h>
+#include<pthread.h>
+void *thread_fun(void*args);
+int num[2]={3,5};
+int main(){
+pthread_t t;
+void *result;
+pthread_create(&t,NULL,thread_fun,(void*)num);
+pthread_join(t,&result);
+printf("inside main program\n");
+printf("Thread returned: %s\n",(char*)result);
+}
+void *thread_fun(void*args){
+printf("inside thread\n");
+int*x=args;
+int sum=x[0]+x[1];
+printf("sum is %d\n",sum);
+pthread_exit("sum calculated");
+}
